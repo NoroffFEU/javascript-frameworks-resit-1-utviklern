@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Game } from '../types/Game';
 import { fetchGames } from '../services/api';
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [games, setGames] = useState<Game[]>([]);
@@ -48,38 +49,37 @@ export default function Home() {
           for (let i = 0; i < games.length; i++) {
             const game = games[i];
             cards.push(
-              <div
-                key={game.id}
-                className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105"
-              >
-                <img
-                  src={game.image.url}
-                  alt={game.image.alt}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4 flex flex-col flex-1">
-                  <h2 className="text-xl font-semibold mb-1">{game.name}</h2>
-                  <p className="text-gray-600 text-sm mb-1">Released: {game.released}</p>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {(() => {
-                      const genreTags = [];
-                      for (let j = 0; j < game.genre.length; j++) {
-                        const genre = game.genre[j];
-                        genreTags.push(
-                          <span
-                            key={genre}
-                            className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded"
-                          >
-                            {genre}
-                          </span>
-                        );
-                      }
-                      return genreTags;
-                    })()}
+              <Link to={`/game/${game.id}`} key={game.id} className="hover:no-underline">
+                <div className="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105">
+                  <img
+                    src={game.image.url}
+                    alt={game.image.alt}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-4 flex flex-col flex-1">
+                    <h2 className="text-xl font-semibold mb-1">{game.name}</h2>
+                    <p className="text-gray-600 text-sm mb-1">Released: {game.released}</p>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {(() => {
+                        const genreTags = [];
+                        for (let j = 0; j < game.genre.length; j++) {
+                          const genre = game.genre[j];
+                          genreTags.push(
+                            <span
+                              key={genre}
+                              className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded"
+                            >
+                              {genre}
+                            </span>
+                          );
+                        }
+                        return genreTags;
+                      })()}
+                    </div>
+                    <p className="text-gray-700 text-sm line-clamp-3">{game.description}</p>
                   </div>
-                  <p className="text-gray-700 text-sm line-clamp-3">{game.description}</p>
                 </div>
-              </div>
+              </Link>
             );
           }
           return cards;
