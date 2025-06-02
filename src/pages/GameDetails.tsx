@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchGameById } from '../services/api';
 import type { Game } from '../types/Game';
+import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
+import { useFavourites } from '../hooks/useFavourites';
 
 export default function GameDetails() {
   const { id } = useParams<{ id: string }>();
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { isFavourite, toggleFavourite } = useFavourites();
 
   useEffect(() => {
     const loadGame = async () => {
@@ -45,7 +48,19 @@ export default function GameDetails() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Link to="/" className="text-black underline mb-4 inline-block">&larr; Back to Home</Link>
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="relative max-w-2xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+        <button
+          type="button"
+          onClick={() => toggleFavourite(game)}
+          className="absolute top-4 right-4 z-10"
+          aria-label={isFavourite(game.id) ? "Remove from favourites" : "Add to favourites"}
+        >
+          {isFavourite(game.id) ? (
+            <HeartSolid className="h-7 w-7 text-red-600" />
+          ) : (
+            <HeartSolid className="h-7 w-7 text-gray-800" />
+          )}
+        </button>
         <img src={game.image.url} alt={game.image.alt} className="w-full h-64 object-cover" />
         <div className="p-6">
           <h1 className="text-3xl font-bold mb-2">{game.name}</h1>
