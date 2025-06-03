@@ -4,13 +4,17 @@ import { fetchGames } from '../services/api';
 import { Link } from 'react-router-dom';
 import { HeartIcon as HeartSolid } from '@heroicons/react/24/solid';
 import { useFavourites } from '../hooks/useFavourites';
+import SearchAndSort from '../components/SearchAndSort';
 
 export default function Home() {
   const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isFavourite, toggleFavourite } = useFavourites();
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('name-asc');
 
+//fetch games
   useEffect(() => {
     const loadGames = async () => {
       try {
@@ -23,7 +27,6 @@ export default function Home() {
         setLoading(false);
       }
     };
-
     loadGames();
   }, []);
 
@@ -43,19 +46,34 @@ export default function Home() {
     );
   }
 
+//search and sort
+  let filteredGames = games.filter(game =>
+    game.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (sort === 'name-asc') {
+    filteredGames.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sort === 'name-desc') {
+    filteredGames.sort((a, b) => b.name.localeCompare(a.name));
+  } else if (sort === 'year-asc') {
+    filteredGames.sort((a, b) => Number(a.released) - Number(b.released));
+  } else if (sort === 'year-desc') {
+    filteredGames.sort((a, b) => Number(b.released) - Number(a.released));
+  }
+
+//cards
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold mb-20 text-center">Old Games Collection</h1>
+      <SearchAndSort search={search} setSearch={setSearch} sort={sort} setSort={setSort} />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {(() => {
           const cards = [];
-          for (let i = 0; i < games.length; i++) {
-            const game = games[i];
+          for (let i = 0; i < filteredGames.length; i++) {
+            const game = filteredGames[i];
             cards.push(
               <Link to={`/game/${game.id}`} key={game.id} className="hover:no-underline">
-                <div
-                  className="relative flex flex-col rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105 bg-gray-100"
-                >
+                <div className="relative flex flex-col rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105 bg-gray-100">
                   <button
                     type="button"
                     onClick={e => {
@@ -66,9 +84,9 @@ export default function Home() {
                     aria-label={isFavourite(game.id) ? "Remove from favourites" : "Add to favourites"}
                   >
                     {isFavourite(game.id) ? (
-                      <HeartSolid className="h-7 w-7 text-red-600" />
+                      <HeartSolid className="h-16 w-16 text-red-600" />
                     ) : (
-                      <HeartSolid className="h-7 w-7 text-gray-800" />
+                      <HeartSolid className="h-16 w-16 text-indigo-500" />
                     )}
                   </button>
                   <img

@@ -12,6 +12,7 @@ export default function GameDetails() {
   const [error, setError] = useState<string | null>(null);
   const { isFavourite, toggleFavourite } = useFavourites();
 
+//fetch game details
   useEffect(() => {
     const loadGame = async () => {
       try {
@@ -28,6 +29,7 @@ export default function GameDetails() {
     loadGame();
   }, [id]);
 
+//loading
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -36,6 +38,7 @@ export default function GameDetails() {
     );
   }
 
+//error
   if (error || !game) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
@@ -45,6 +48,7 @@ export default function GameDetails() {
     );
   }
 
+//game details
   return (
     <div className="container mx-auto px-4 py-8">
       <Link to="/" className="text-black underline mb-4 inline-block">&larr; Back to Home</Link>
@@ -56,9 +60,9 @@ export default function GameDetails() {
           aria-label={isFavourite(game.id) ? "Remove from favourites" : "Add to favourites"}
         >
           {isFavourite(game.id) ? (
-            <HeartSolid className="h-7 w-7 text-red-600" />
+            <HeartSolid className="h-16 w-16 text-red-600" />
           ) : (
-            <HeartSolid className="h-7 w-7 text-gray-800" />
+            <HeartSolid className="h-16 w-16 text-indigo-500" />
           )}
         </button>
         <img src={game.image.url} alt={game.image.alt} className="w-full h-64 object-cover" />

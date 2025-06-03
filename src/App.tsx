@@ -5,6 +5,7 @@ import Favorites from './pages/Favorites';
 import Navbar from './components/Navbar';
 import { Toaster } from 'react-hot-toast';
 
+//app
 function App() {
   return (
     <Router>
