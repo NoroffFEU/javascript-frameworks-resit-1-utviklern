@@ -29,6 +29,17 @@ export default function Navbar() {
           >
             Favorites
           </Link>
+          <Link
+            to="/genres"
+            className={
+              'font-semibold text-lg ' +
+              (location.pathname === '/genres' 
+                ? 'text-black font-bold underline' 
+                : 'text-gray-800 hover:text-blue-600')
+            }
+          >
+            Genres
+          </Link>
         </div>
       </div>
     </nav>
